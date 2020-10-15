@@ -88,7 +88,7 @@ expressions unless really necessary. You can see the evaluation results either
 by running a Haskell program or by playing with some functions in the
 interactive interpreter (explained later).
 
-Haskell is a __statically-typed__ language, which means that each expression has
+Haskell is a __strongly-typed__ language, which means that each expression has
 a type. Each value and function is associated with some type. You can't change
 the value type. You can only pass a value to some function that will do its
 work, and maybe produce a value of a different type.
@@ -99,6 +99,11 @@ through the variables – begin with the lowercase letter. The concept of
 polymorphism is more sophisticated than working with concrete types, thus we
 won't dive too much into it in this chapter and will work with the concrete
 types for now.
+
+Furthermore, Haskell is a __statically-typed__ language, which means that each
+expression has the type known at compile-time, rather than run-time. It allows
+the compiler to catch some kinds of bugs in your program early; before you
+even run it.
 
 Additionally to static typing, Haskell has __type inference__. This means that
 you _don't need_ to specify the type of each expression as it is going to be
@@ -538,7 +543,10 @@ value after "=" where the condition is true.
 Casual reminder about adding top-level type signatures for all functions :)
 -}
 mid :: Int -> Int -> Int -> Int
-mid x y z = error "mid: not implemented!"
+mid x y z
+        | (x <= y) && (x >= z) || (x >= y) && (x <= z) = x
+        | (y <= x) && (y >= z) || (y >= x) && (y <= z) = y
+        | otherwise = z
 
 {- |
 =⚔️= Task 8
@@ -552,7 +560,14 @@ True
 >>> isVowel 'x'
 False
 -}
-isVowel c = error "isVowel: not implemented!"
+isVowel :: Char -> Bool
+isVowel c
+        | c == 'a' = True
+        | c == 'e' = True
+        | c == 'i' = True
+        | c == 'o' = True
+        | c == 'u' = True
+        | otherwise = False
 
 
 {- |
@@ -615,8 +630,11 @@ Implement a function that returns the sum of the last two digits of a number.
 Try to introduce variables in this task (either with let-in or where) to avoid
 specifying complex expressions.
 -}
-
-sumLast2 n = error "sumLast2: Not implemented!"
+sumLast2 :: Int -> Int
+sumLast2 n =
+    let a = mod (abs n) 10
+        b = div (mod (abs n) 100) 10
+    in a + b
 
 
 {- |
@@ -636,8 +654,12 @@ Implement a function that returns the first digit of a given number.
 You need to use recursion in this task. Feel free to return to it later, if you
 aren't ready for this boss yet!
 -}
-
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n
+  | div x 10 == 0 = abs n
+  | otherwise = firstDigit (div x 10)
+  where
+    x = abs n
 
 
 {-
